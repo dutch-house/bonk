@@ -18,7 +18,8 @@ export default defineConfig({
 		{
 			name: "auctionInitiator",
 			abi: (AuctionInitiatorAbi as unknown as ContractConfig).abi,
-			address: `0x${process.env.VITE_BONK_AUCTION_INITIATOR_ADDRESS}` as Address,
+			address:
+				`0x${process.env.VITE_BONK_AUCTION_INITIATOR_ADDRESS}` as Address,
 		},
 		{
 			name: "auctionMarket",

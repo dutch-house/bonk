@@ -1,0 +1,42 @@
+@import url("@bonk/ui/styles/globals");
+/* import "@bonk/ui/styles/globals" */
+
+@layer base {
+	* {
+		@apply border-border;
+		@apply scroll-smooth;
+		/* border: 0.1px solid rgb(191, 251, 49) !important; */
+	}
+
+	body {
+		@apply bg-background text-foreground;
+	}
+
+	#root {
+		@apply flex min-h-dvh w-full flex-col h-full relative;
+	}
+
+	.content-container {
+		@apply container max-2xl:w-11/12 relative mx-auto;
+	}
+	.page-container {
+		@apply container relative min-h-[90dvh];
+		@apply mx-auto mb-8 px-0 max-2xl:w-11/12 max-sm:mb-16 first:mt-8;
+		@apply pb-[10vh] pt-[2vh];
+	}
+
+	::-webkit-scrollbar {
+		width: 0px;
+	}
+	::-webkit-scrollbar-track {
+		background: transparent;
+		-webkit-box-shadow: none;
+	}
+	::-webkit-scrollbar-thumb {
+		background: transparent;
+		-webkit-box-shadow: none;
+	}
+	::-webkit-scrollbar-thumb:window-inactive {
+		background: none;
+	}
+}

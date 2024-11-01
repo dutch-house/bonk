@@ -1,7 +1,16 @@
+import { parseEpoch } from "@/utils/time";
 import { useEffect, useState } from "react";
 
-export const useCountdown = (startDate: Date, duration: number) => {
-	const endDate = new Date(startDate.getTime() + duration * 1000);
+export const useCountdown = ({
+	startDate,
+	duration = 0,
+}: { startDate?: Date; duration?: number }) => {
+	const timeUnits = Object.fromEntries(
+		["days", "hours", "minutes", "seconds"].map((key) => [key, 0]),
+	);
+	if (!startDate) return timeUnits;
+
+	const endDate = new Date(startDate.getTime() + duration);
 	const [countdown, setCountdown] = useState(
 		endDate.getTime() - new Date().getTime(),
 	);
@@ -15,14 +24,7 @@ export const useCountdown = (startDate: Date, duration: number) => {
 		return () => clearInterval(interval);
 	}, [endDate]);
 
-	const days = Math.floor(countdown / (1000 * 60 * 60 * 24));
-	const hours = Math.floor(
-		(countdown % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
-	);
-	const minutes = Math.floor((countdown % (1000 * 60 * 60)) / (1000 * 60));
-	const seconds = Math.floor((countdown % (1000 * 60)) / 1000);
-
-	return { days, hours, minutes, seconds };
+	return parseEpoch(countdown);
 };
 
 export default useCountdown;

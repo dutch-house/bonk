@@ -5,6 +5,9 @@
 	* {
 		@apply border-border;
 		@apply scroll-smooth;
+		font-family: "Satoshi", Inter, system-ui, Avenir, Helvetica, Arial,
+			sans-serif;
+
 		/* border: 0.1px solid rgb(191, 251, 49) !important; */
 	}
 

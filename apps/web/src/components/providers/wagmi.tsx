@@ -1,5 +1,5 @@
 import type { PropsWithChildren } from "react";
-import { http, createTestClient } from "viem";
+import { http, createTestClient, fallback } from "viem";
 import { WagmiProvider as Wagmi, type WagmiProviderProps } from "wagmi";
 
 import { createConfig } from "wagmi";
@@ -23,7 +23,10 @@ import { coinbaseWallet, injected, metaMask } from "wagmi/connectors";
 const LocalhostClient = createTestClient({
 	chain: localhost,
 	mode: "hardhat",
-	transport: http(),
+	transport: fallback([
+		http("http://0.0.0.0:8545"),
+		http("http://127.0.0.1:8545"),
+	]),
 });
 
 export const WagmiConfig = createConfig({

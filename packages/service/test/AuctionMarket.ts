@@ -90,6 +90,60 @@ describe("AuctionMarket", () => {
 				auction.connect(bidder1).placeBid({ value: bidAmount }),
 			).to.be.revertedWith("Auction ended");
 		});
+
+		it("Should calculate current price correctly with Dutch auction logic", async () => {
+			// Simulate the passage of time within the auction duration
+			await hre.ethers.provider.send("evm_increaseTime", [duration / 2]);
+			await hre.ethers.provider.send("evm_mine", []);
+
+			const currentPrice = await auction.getCurrentPrice();
+			expect(currentPrice).to.be.at.least(reservedPrice);
+			expect(currentPrice).to.be.at.most(startPrice);
+		});
+
+		it("Should revert if creator attempts to place a bid", async () => {
+			const bidAmount = hre.ethers.parseEther("0.5");
+			await expect(
+				auction.connect(owner).placeBid({ value: bidAmount }),
+			).to.be.revertedWith("Creator cannot place a bid");
+		});
+
+		// it("Should revert if bid exceeds remaining supply", async () => {
+		//   // Place an initial bid to partially consume the supply
+		//   const initialBidAmount = hre.ethers.parseEther("1");
+		//   await auction.connect(bidder1).placeBid({ value: initialBidAmount });
+
+		//   // Place a large bid that should exceed the remaining supply
+		//   const largeBidAmount = hre.ethers.parseEther("1000");
+
+		//   await expect(
+		//     auction.connect(bidder2).placeBid({ value: largeBidAmount }),
+		//   ).to.be.revertedWith("Insufficient tokens remaining for this bid");
+		// });
+
+		it("Should correctly calculate remaining supply after bids", async () => {
+			// Place some bids
+			const bidAmount1 = hre.ethers.parseEther("200");
+			const bidAmount2 = hre.ethers.parseEther("300");
+
+			await auction.connect(bidder1).placeBid({ value: bidAmount1 });
+			await auction.connect(bidder2).placeBid({ value: bidAmount2 });
+
+			// Manually calculate expected remaining supply
+			const totalSupply = await auction.getTotalSupply();
+			const currentPrice = await auction.getCurrentPrice();
+			const tokensFromBid1 =
+				(BigInt(bidAmount1) * BigInt(10) ** BigInt(18)) / BigInt(currentPrice);
+			const tokensFromBid2 =
+				(BigInt(bidAmount2) * BigInt(10) ** BigInt(18)) / BigInt(currentPrice);
+			const expectedRemainingSupply =
+				totalSupply - tokensFromBid1 - tokensFromBid2;
+
+			// Check the remaining supply in the contract
+			const remainingSupply = await auction.getRemainingSupply();
+
+			expect(remainingSupply).to.equal(expectedRemainingSupply);
+		});
 	});
 
 	describe("Auction End and Token Distribution", () => {
@@ -116,6 +170,27 @@ describe("AuctionMarket", () => {
 			expect(bidder1Tokens).to.be.gt(0);
 			expect(bidder2Tokens).to.be.gt(0);
 			expect(remainingSupply).to.equal(0);
+		});
+
+		it("Should allow only the creator to distribute tokens", async () => {
+			const bidAmount = hre.ethers.parseEther("1.0");
+
+			// Place bids to ensure some commitments are in place
+			await auction.connect(bidder1).placeBid({ value: bidAmount });
+			await auction.connect(bidder2).placeBid({ value: bidAmount });
+
+			// Fast forward time to end the auction
+			await hre.ethers.provider.send("evm_increaseTime", [duration + 1]);
+			await hre.ethers.provider.send("evm_mine", []);
+
+			// Attempt to call distributeTokens as a non-creator
+			await expect(
+				auction.connect(bidder1).distributeTokens(),
+			).to.be.revertedWith("Only the creator can distribute tokens");
+
+			// Attempt to call distributeTokens as the creator
+			await expect(auction.connect(owner).distributeTokens()).to.not.be
+				.reverted;
 		});
 
 		// it("Should refund excess ethers to bidders", async function () {

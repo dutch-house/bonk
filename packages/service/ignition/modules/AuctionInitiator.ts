@@ -2,10 +2,10 @@
 // Learn more about it at https://hardhat.org/ignition
 
 import { buildModule } from "@nomicfoundation/hardhat-ignition/modules";
-import { parseEther } from "viem";
+import { parseEther, parseUnits } from "viem";
 
 // Default values for auction creation
-const DEFAULT_TOTAL_SUPPLY = 1000000n;
+const DEFAULT_TOTAL_SUPPLY = parseUnits("1000000", 18);
 const DEFAULT_START_PRICE = parseEther("1"); // 1 ETH
 const DEFAULT_RESERVED_PRICE = parseEther("0.1"); // 0.1 ETH
 

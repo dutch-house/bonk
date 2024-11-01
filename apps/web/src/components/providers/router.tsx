@@ -1,3 +1,4 @@
+import NotFound from "@/components/layouts/notfound";
 import { routeTree } from "@/routes.gen";
 import {
 	RouterProvider as TsRouterProvider,
@@ -6,7 +7,10 @@ import {
 import { lazy } from "react";
 
 // Create a new router instance
-const Router = createRouter({ routeTree });
+const Router = createRouter({
+	routeTree,
+	defaultNotFoundComponent: NotFound.Page,
+});
 // Register the router instance for type safety
 declare module "@tanstack/react-router" {
 	interface Register {

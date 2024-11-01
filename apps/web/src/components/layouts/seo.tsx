@@ -4,7 +4,7 @@ import { Helmet, type HelmetProps } from "react-helmet-async";
 type SEO = HelmetProps;
 export const SEO = (props: SEO) => {
 	return (
-		<Helmet defaultTitle={AppName} titleTemplate={"%s"} {...props}>
+		<Helmet defaultTitle={AppName} titleTemplate={`${AppName} - %s`} {...props}>
 			<html lang="en" />
 			<meta charSet="utf-8" />
 			{/* base element */}

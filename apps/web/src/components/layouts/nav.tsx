@@ -1,8 +1,8 @@
 import { ButtonVariants } from "@bonk/ui/components/ui/button";
 import { cn } from "@bonk/ui/utils/dom";
 import type { LucideIcon } from "lucide-react";
-import Theme from "./theme";
 
+import { Dock, DockIcon } from "@bonk/ui/components/flairs/ui.dock";
 import { Separator } from "@bonk/ui/components/ui/separator";
 import {
 	Tooltip,
@@ -11,9 +11,10 @@ import {
 	TooltipTrigger,
 } from "@bonk/ui/components/ui/tooltip";
 import { Link } from "@tanstack/react-router";
-import { GavelIcon } from "lucide-react";
+import { GavelIcon, UserRoundCogIcon } from "lucide-react";
 import type { ComponentProps, HTMLAttributes } from "react";
 import Logo from "./logo";
+import Theme from "./theme";
 import Wallet from "./wallet";
 
 //#startregion  //*======== CONSTANTS ===========
@@ -24,7 +25,12 @@ const Routes: (ComponentProps<typeof Link> & {
 	{
 		to: "/auctions",
 		icon: GavelIcon,
-		label: "Auctions",
+		label: "Browse Auctions",
+	},
+	{
+		to: "/auctions/manage",
+		icon: UserRoundCogIcon,
+		label: "Manage Auctions",
 	},
 ];
 //#endregion  //*======== CONSTANTS ===========
@@ -47,11 +53,12 @@ const Nav = ({ className, children, ...props }: Nav) => {
 			<main
 				className={cn(
 					"flex flex-row place-items-center max-sm:place-content-between gap-x-4",
+					"max-sm:[&>*:not(:first-child)]:hidden",
 				)}
 			>
 				<Logo />
 
-				<div className="flex flex-1 flex-row place-content-end gap-2">
+				<div className={cn("flex flex-1 flex-row place-content-end gap-2")}>
 					<TooltipProvider>
 						{Routes.map((item) => {
 							if (item.to === "/") return null;
@@ -82,10 +89,51 @@ const Nav = ({ className, children, ...props }: Nav) => {
 					orientation="vertical"
 					className="h-full py-2 bg-primary/50"
 				/>
-				<Theme className="rounded-full" />
 				<Wallet />
 			</main>
 		</nav>
 	);
 };
 export default Nav;
+
+type NavDock = HTMLAttributes<HTMLDivElement>;
+const NavDock = ({ className, children, ...props }: Nav) => {
+	return (
+		<TooltipProvider>
+			<Dock
+				direction="middle"
+				className={cn("sm:hidden", "fixed inset-x-0 bottom-12 z-50", className)}
+				{...props}
+			>
+				{Routes.map((item) => (
+					<DockIcon key={`nav-dock-${item.label}`}>
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<Link
+									to={item.to}
+									aria-label={item.label}
+									className={cn(
+										ButtonVariants({ variant: "ghost", size: "icon" }),
+										"size-8 rounded-full",
+									)}
+								>
+									<item.icon className="size-4" />
+								</Link>
+							</TooltipTrigger>
+							<TooltipContent>
+								<p>{item.label}</p>
+							</TooltipContent>
+						</Tooltip>
+					</DockIcon>
+				))}
+				{children}
+				<Separator orientation="vertical" className="h-full py-2" />
+				<DockIcon>
+					<Theme className="size-8 rounded-full" />
+				</DockIcon>
+				<Wallet />
+			</Dock>
+		</TooltipProvider>
+	);
+};
+Nav.Dock = NavDock;

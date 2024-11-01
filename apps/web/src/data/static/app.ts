@@ -1,6 +1,6 @@
 import AppPackage from "@/../package.json";
 
-export const AppName = AppPackage.name;
+export const AppName = "BONK";
 export const DebugPrefix = `@${AppName.toUpperCase()}`;
 export const AppVersion = AppPackage.version;
 export const AppDescription = AppPackage.description;

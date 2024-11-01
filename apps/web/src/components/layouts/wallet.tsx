@@ -1,4 +1,6 @@
 import { getTruncatedAddress } from "@/utils/account";
+import AnimateFade from "@bonk/ui/components/flairs/animate.fade";
+import BackgroundSquares from "@bonk/ui/components/flairs/background.squares";
 import Button, {
 	type ButtonProps,
 	ButtonVariants,
@@ -25,8 +27,8 @@ import {
 	PopoverTrigger,
 } from "@bonk/ui/components/ui/popover";
 import { cn } from "@bonk/ui/utils/dom";
-import { CheckIcon, GlobeIcon, WalletIcon } from "lucide-react";
-import { useState } from "react";
+import { CheckIcon, ShieldQuestionIcon, WalletIcon } from "lucide-react";
+import { type HTMLAttributes, useState } from "react";
 import { toast } from "sonner";
 import type { Chain } from "viem";
 import { localhost } from "viem/chains";
@@ -34,14 +36,7 @@ import { useAccount, useConnect, useDisconnect, useSwitchChain } from "wagmi";
 
 const Wallet = () => {
 	const { isConnected } = useAccount();
-	return !isConnected ? (
-		<Wallet.Connect />
-	) : (
-		<>
-			<Wallet.Chains />
-			<Wallet.Account />
-		</>
-	);
+	return !isConnected ? <Wallet.Connect /> : <Wallet.Account />;
 };
 export default Wallet;
 
@@ -135,10 +130,11 @@ const WalletAccount = () => {
 };
 Wallet.Account = WalletAccount;
 
-const WalletChains = () => {
+type WalletChains = ButtonProps;
+const WalletChains = ({ className, children, ...props }: WalletChains) => {
 	//#startregion  //*======== CHAIN ===========
 	const { chains, switchChainAsync } = useSwitchChain();
-	const { chain: currentChain } = useAccount();
+	const { chain: currentChain, isConnected, isConnecting } = useAccount();
 	//#endregion  //*======== CHAIN ===========
 
 	//#startregion  //*======== STATES ===========
@@ -161,10 +157,34 @@ const WalletChains = () => {
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
-			<PopoverTrigger asChild>
-				<Button variant="outline" size="icon" aria-expanded={open}>
-					<GlobeIcon className="size-4" />
-				</Button>
+			<PopoverTrigger
+				className={cn(
+					ButtonVariants({
+						variant: "ghost",
+						size: "sm",
+					}),
+					"space-x-2 capitalize",
+					className,
+				)}
+				{...props}
+			>
+				<span className="relative flex size-2">
+					<span
+						className={cn(
+							"animate-ping absolute inline-flex h-full w-full rounded-full opacity-75",
+							isConnected ? "bg-green-400" : "bg-red-400",
+							isConnecting && "bg-orange-400",
+						)}
+					/>
+					<span
+						className={cn(
+							"relative inline-flex rounded-full size-2 ",
+							isConnected && !!currentChain ? "bg-green-500" : "bg-red-500",
+							isConnecting && "bg-orange-500",
+						)}
+					/>
+				</span>
+				<span>{currentChain?.name ?? "Not Connected"}</span>
 			</PopoverTrigger>
 			<PopoverContent className="p-0">
 				<Command>
@@ -201,3 +221,63 @@ const WalletChains = () => {
 	);
 };
 Wallet.Chains = WalletChains;
+
+type WalletRequired = HTMLAttributes<HTMLDivElement>;
+export const WalletRequired = ({
+	className,
+	children,
+	...props
+}: WalletRequired) => {
+	return (
+		<>
+			<BackgroundSquares
+				duration={3}
+				repeatDelay={1}
+				className={cn(
+					"opacity-20",
+					"[mask-image:radial-gradient(80vw_circle_at_center,white,transparent)]",
+				)}
+			/>
+
+			<AnimateFade
+				delay={0.25}
+				inView
+				className={cn(
+					"w-full",
+					"flex flex-col place-items-center gap-y-4",
+					"my-8",
+					className,
+				)}
+				{...props}
+			>
+				<div
+					className={cn(
+						"bg-primary/10 rounded-full",
+						"size-12",
+						"flex place-items-center place-content-center",
+					)}
+				>
+					<ShieldQuestionIcon className="text-primary size-6" />
+				</div>
+
+				<h3
+					className={cn(
+						"text-2xl font-bold leading-none tracking-tight text-pretty whitespace-break-spaces text-center",
+						"max-sm:max-w-40",
+					)}
+				>
+					Authentication Required
+				</h3>
+
+				<p className="text-sm text-gray-500 mb-4 text-center text-balance whitespace-break-spaces max-w-prose max-sm:px-6 sm:w-9/12">
+					Looking for more? Connect your preferred wallet to unlock the secrets
+					within.
+				</p>
+
+				<Wallet.Connect className="w-2/3 sm:w-2/5 max-w-prose [&>svg]:hidden" />
+				{children}
+			</AnimateFade>
+		</>
+	);
+};
+Wallet.Required = WalletRequired;

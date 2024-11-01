@@ -1,4 +1,5 @@
 @import url("./reset.css");
+@import url("./font.satoshi.css");
 
 @tailwind base;
 @tailwind components;

@@ -1,8 +1,11 @@
 import Wallet from "@/components/layouts/wallet";
+import { CHAIN_DENOM, DEFINITIONS } from "@/data/clients/bonk/constants";
+import { CreateAuctionRequest } from "@/data/clients/bonk/schema";
 import { logger } from "@/utils/debug";
 import { delay } from "@/utils/time";
 import {
 	useReadAuctionInitiatorGetAllAuctions,
+	useReadAuctionInitiatorGetAuctionsByCreator,
 	useWriteAuctionInitiatorCreateAuction,
 } from "@/wagmi.gen";
 import Button, {
@@ -48,15 +51,9 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { parseEther } from "viem";
 import { useAccount } from "wagmi";
-import { z } from "zod";
+import type { z } from "zod";
 
-const FormSchema = z.object({
-	name: z.string().trim().min(1).max(10),
-	symbol: z.string().trim().toUpperCase().min(3).max(5),
-	totalSupply: z.coerce.number().int().positive().min(100).default(1000),
-	startPrice: z.coerce.number().positive().min(1).default(1),
-	reservedPrice: z.coerce.number().positive().default(0.5),
-});
+const FormSchema = CreateAuctionRequest;
 type FormSchema = z.infer<typeof FormSchema>;
 
 type AuctionCreateForm = HTMLAttributes<HTMLFormElement> & {
@@ -71,12 +68,25 @@ const AuctionCreateForm = ({
 	...props
 }: AuctionCreateForm) => {
 	//#startregion  //*======== WALLET ===========
-	const { address: account, chainId, isConnected } = useAccount();
+	const { address: account, chainId, isConnected, chain } = useAccount();
 	const isEnabled = isConnected || !account;
 	//#endregion  //*======== WALLET ===========
 
 	//#startregion  //*======== CLIENT ===========
-	const { refetch } = useReadAuctionInitiatorGetAllAuctions();
+	const { refetch: refetchAllAuctions } = useReadAuctionInitiatorGetAllAuctions(
+		{
+			query: {
+				enabled: false,
+			},
+		},
+	);
+	const { refetch: refetchCreatedAuctions } =
+		useReadAuctionInitiatorGetAuctionsByCreator({
+			args: account && [account],
+			query: {
+				enabled: false,
+			},
+		});
 	const { writeContractAsync } = useWriteAuctionInitiatorCreateAuction();
 	//#endregion  //*======== CLIENT ===========
 
@@ -153,7 +163,8 @@ const AuctionCreateForm = ({
 						// ),
 					});
 
-					refetch();
+					refetchAllAuctions();
+					refetchCreatedAuctions();
 					if (onFormSubmit) onFormSubmit(values);
 				},
 				onError: (error) =>
@@ -216,7 +227,10 @@ const AuctionCreateForm = ({
 						<FormItem className="flex-1 min-w-full sm:min-w-fit">
 							<FormLabel className="capitalize">Token {field.name}</FormLabel>
 							<FormControl>
-								<Input placeholder="Acronym of the token e.g. ETH" {...field} />
+								<Input
+									placeholder={`Acronym of the token e.g. ${chain?.nativeCurrency?.symbol ?? CHAIN_DENOM}`}
+									{...field}
+								/>
 							</FormControl>
 							<FormMessage />
 						</FormItem>
@@ -230,7 +244,7 @@ const AuctionCreateForm = ({
 						<FormItem className="flex-1 min-w-full sm:min-w-fit">
 							<FormLabel
 								className={cn(
-									"flex flex-wrap flex-row place-items-center place-content-between",
+									"flex flex-wrap flex-row place-items-center place-content-between gap-y-2 gap-x-6",
 								)}
 							>
 								<TooltipProvider>
@@ -238,9 +252,8 @@ const AuctionCreateForm = ({
 										<TooltipTrigger className="capitalize underline-offset-4 underline decoration-dotted hover:decoration-solid cursor-help">
 											Total Supply
 										</TooltipTrigger>
-										<TooltipContent>
-											The maximum number of tokens that can exist, excluding
-											those burned
+										<TooltipContent className="max-w-80 text-pretty">
+											{DEFINITIONS["Total Supply"]}
 										</TooltipContent>
 									</Tooltip>
 								</TooltipProvider>
@@ -273,7 +286,7 @@ const AuctionCreateForm = ({
 						<FormItem className="flex-1 min-w-full sm:min-w-fit">
 							<FormLabel
 								className={cn(
-									"flex flex-wrap flex-row place-items-center place-content-between",
+									"flex flex-wrap flex-row place-items-center place-content-between gap-y-2 gap-x-6",
 								)}
 							>
 								<TooltipProvider>
@@ -281,9 +294,8 @@ const AuctionCreateForm = ({
 										<TooltipTrigger className="capitalize underline-offset-4 underline decoration-dotted hover:decoration-solid cursor-help">
 											Start Price
 										</TooltipTrigger>
-										<TooltipContent>
-											The initial bidding price or minimum offer for a token
-											sale or auction.
+										<TooltipContent className="max-w-80 text-pretty">
+											{DEFINITIONS["Start Price"]}
 										</TooltipContent>
 									</Tooltip>
 								</TooltipProvider>
@@ -292,16 +304,16 @@ const AuctionCreateForm = ({
 								<Input
 									type="number"
 									step={0.5}
-									onMouseEnter={(e) => {
+									{...field}
+									onFocus={(e) => {
 										if (field.value.toString() === "0")
 											e.currentTarget.value = "";
 									}}
-									onMouseLeave={(e) => {
+									onBlur={(e) => {
 										if (Number.isNaN(e.currentTarget.valueAsNumber))
 											e.currentTarget.value = "0";
 										field.onChange(e);
 									}}
-									{...field}
 								/>
 							</FormControl>
 							<FormMessage />
@@ -316,7 +328,7 @@ const AuctionCreateForm = ({
 						<FormItem className="flex-1 min-w-full sm:min-w-fit">
 							<FormLabel
 								className={cn(
-									"flex flex-wrap flex-row place-items-center place-content-between",
+									"flex flex-wrap flex-row place-items-center place-content-between gap-y-2",
 								)}
 							>
 								<TooltipProvider>
@@ -324,9 +336,8 @@ const AuctionCreateForm = ({
 										<TooltipTrigger className="capitalize underline-offset-4 underline decoration-dotted hover:decoration-solid decoration-muted-foreground cursor-help">
 											Reserved Price
 										</TooltipTrigger>
-										<TooltipContent>
-											The lowest acceptable price a seller will consider, below
-											which the sale won&apos;t proceed.
+										<TooltipContent className="max-w-80 text-pretty">
+											{DEFINITIONS["Reserved Price"]}
 										</TooltipContent>
 									</Tooltip>
 								</TooltipProvider>
@@ -335,16 +346,16 @@ const AuctionCreateForm = ({
 								<Input
 									type="number"
 									step={0.5}
-									onMouseEnter={(e) => {
+									{...field}
+									onFocus={(e) => {
 										if (field.value.toString() === "0")
 											e.currentTarget.value = "";
 									}}
-									onMouseLeave={(e) => {
+									onBlur={(e) => {
 										if (Number.isNaN(e.currentTarget.valueAsNumber))
 											e.currentTarget.value = "0";
 										field.onChange(e);
 									}}
-									{...field}
 								/>
 							</FormControl>
 							<FormMessage />
@@ -358,7 +369,11 @@ const AuctionCreateForm = ({
 					{isConnected ? (
 						<Button
 							type="submit"
-							disabled={form.formState.isSubmitting || !isEnabled}
+							disabled={
+								form.formState.isSubmitting ||
+								!isEnabled ||
+								!form.formState.isValid
+							}
 							className="space-x-2"
 						>
 							{form.formState.isSubmitting && (
@@ -407,14 +422,14 @@ const AuctionCreate = ({ className, children, ...props }: AuctionCreate) => {
 					ButtonVariants({
 						size: "sm",
 					}),
-					"space-x-2",
+					"space-x-2 group",
 					className,
 				)}
 				{...props}
 			>
 				{children ?? (
 					<>
-						<HammerIcon className="size-4" />
+						<HammerIcon className="size-4 group-hover:rotate-45" />
 						<span>Create</span>
 					</>
 				)}
@@ -422,7 +437,7 @@ const AuctionCreate = ({ className, children, ...props }: AuctionCreate) => {
 
 			<DialogContent>
 				<DialogHeader>
-					<DialogTitle>Create Auction Token</DialogTitle>
+					<DialogTitle>Create Auction</DialogTitle>
 					<DialogDescription>
 						Set up your unique auction token to attract bidders.
 					</DialogDescription>

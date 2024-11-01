@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 import animate from "tailwindcss-animate";
+import defaultTheme from "tailwindcss/defaultTheme";
 
 const config = {
 	darkMode: ["class"],
@@ -12,6 +13,9 @@ const config = {
 	],
 	theme: {
 		extend: {
+			fontFamily: {
+				sans: ['"Satoshi"', ...defaultTheme.fontFamily.sans],
+			},
 			borderRadius: {
 				lg: "var(--radius)",
 				md: "calc(var(--radius) - 2px)",

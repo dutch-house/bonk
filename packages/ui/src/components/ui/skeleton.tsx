@@ -1,6 +1,6 @@
 import { cn } from "../../utils/dom";
 
-function Skeleton({
+export default function Skeleton({
 	className,
 	...props
 }: React.HTMLAttributes<HTMLDivElement>) {

@@ -11,6 +11,7 @@ import { Fragment, Suspense, lazy } from "react";
 
 const FlagDownAlert = lazy(() => import("@/components/flags/flag.down"));
 const FlagBetaAlert = lazy(() => import("@/components/flags/flag.beta"));
+const Footer = lazy(() => import("@/components/layouts/footer"));
 
 export const Route = createRootRoute({
 	component: () => {
@@ -22,7 +23,7 @@ export const Route = createRootRoute({
 		return (
 			<Fragment>
 				<SEO title={title} />
-				<Toaster richColors position="bottom-center" className="z-[100]" />
+				<Toaster richColors position="bottom-right" className="z-[100]" />
 
 				<Nav />
 
@@ -35,9 +36,15 @@ export const Route = createRootRoute({
 
 				<Outlet />
 
+				<Nav.Dock />
+
 				<Suspense>
-					<RouterProvider.Devtools />
+					<Footer />
 				</Suspense>
+
+				{/* <Suspense>
+					<RouterProvider.Devtools />
+				</Suspense> */}
 			</Fragment>
 		);
 	},

@@ -40,12 +40,12 @@ export const formatDatetime = (
 };
 
 export const formatCountdown = ({
-	minutes,
-	seconds,
-}: {
+	minutes = 0,
+	seconds = 0,
+}: Partial<{
 	minutes: number;
 	seconds: number;
-}) => {
+}>) => {
 	const minutesString = minutes < 10 ? `0${minutes}` : minutes;
 	const secondsString = seconds < 10 ? `0${seconds}` : seconds;
 	return `${minutesString}:${secondsString}`;

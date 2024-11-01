@@ -101,37 +101,40 @@ const NavDock = ({ className, children, ...props }: Nav) => {
 	return (
 		<TooltipProvider>
 			<Dock
-				direction="middle"
-				className={cn("sm:hidden", "fixed inset-x-0 bottom-12 z-50", className)}
+				magnification={60}
+				distance={100}
+				className={cn(
+					"sm:hidden",
+					"fixed inset-x-0 bottom-12 z-50",
+
+					// "!place-items-center",
+					className,
+				)}
 				{...props}
 			>
 				{Routes.map((item) => (
-					<DockIcon key={`nav-dock-${item.label}`}>
+					<DockIcon
+						key={`nav-dock-${item.label}`}
+						className="bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 p-3"
+					>
 						<Tooltip>
 							<TooltipTrigger asChild>
-								<Link
-									to={item.to}
-									aria-label={item.label}
-									className={cn(
-										ButtonVariants({ variant: "ghost", size: "icon" }),
-										"size-8 rounded-full",
-									)}
-								>
-									<item.icon className="size-4" />
+								<Link to={item.to} aria-label={item.label}>
+									<item.icon className="size-full" />
 								</Link>
 							</TooltipTrigger>
-							<TooltipContent>
-								<p>{item.label}</p>
-							</TooltipContent>
+							<TooltipContent>{item.label}</TooltipContent>
 						</Tooltip>
 					</DockIcon>
 				))}
+
 				{children}
 				<Separator orientation="vertical" className="h-full py-2" />
-				<DockIcon>
-					<Theme className="size-8 rounded-full" />
-				</DockIcon>
-				<Wallet />
+				<Theme
+					className="size-10 rounded-full self-center"
+					variant={"default"}
+				/>
+				<Wallet mini className="size-10 rounded-full self-center" />
 			</Dock>
 		</TooltipProvider>
 	);

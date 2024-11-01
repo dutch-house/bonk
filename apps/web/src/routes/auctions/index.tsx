@@ -1,3 +1,4 @@
+import Wallet from "@/components/layouts/wallet";
 import AuctionCreate from "@/components/modules/auction/auction.create";
 import AuctionsGrid from "@/components/modules/auction/auctions.grid";
 import { useReadAuctionInitiatorGetAllAuctions } from "@/wagmi.gen";
@@ -6,6 +7,7 @@ import { cn } from "@bonk/ui/utils/dom";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
+import { useAccount } from "wagmi";
 
 export const Route = createFileRoute("/auctions/")({
 	component: AuctionsPage,
@@ -15,6 +17,10 @@ export const Route = createFileRoute("/auctions/")({
 });
 
 function AuctionsPage() {
+	//#startregion  //*======== WALLET ===========
+	const { chain } = useAccount();
+	//#endregion  //*======== WALLET ===========
+
 	//#startregion  //*======== CLIENT ===========
 	const {
 		data = [],
@@ -49,7 +55,17 @@ function AuctionsPage() {
 						"sm:flex-row flex-wrap sm:place-items-center sm:place-content-between",
 					)}
 				>
-					<h1 className="text-3xl text-pretty truncate flex-1">Auctions</h1>
+					<h1
+						className={cn(
+							"text-pretty font-black leading-none tracking-tighter text-center",
+							"text-4xl",
+							"bg-gradient-to-br text-transparent bg-gradient-stop bg-clip-text",
+							"dark:from-white dark:via-white dark:via-30% dark:to-white/30",
+							"from-black via-black via-30% to-black/30",
+						)}
+					>
+						Auctions
+					</h1>
 
 					<aside
 						className={cn(
@@ -73,7 +89,8 @@ function AuctionsPage() {
 					</aside>
 				</motion.header>
 
-				<AuctionsGrid auctions={data} />
+				{chain && <AuctionsGrid auctions={data} />}
+				{!chain && <Wallet.Required />}
 			</section>
 		</main>
 	);

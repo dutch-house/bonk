@@ -20,8 +20,10 @@ const ThemeIcon: Record<
 	[ThemeTypes.enum.light]: SunIcon,
 };
 
-type Theme = ButtonProps;
-const Theme = ({ className, children, ...props }: Theme) => {
+type Theme = ButtonProps & {
+	icon?: IconProps;
+};
+const Theme = ({ className, children, icon = {}, ...props }: Theme) => {
 	const dispatch = useRootDispatch();
 	const [themeMode, setThemeMode] = [
 		useRootSelector(AppSelectors.state).theme,
@@ -44,7 +46,10 @@ const Theme = ({ className, children, ...props }: Theme) => {
 			className={cn("group", className)}
 			{...props}
 		>
-			<ThemeModeIcon className="size-4 group-active:animate-bounce" />
+			<ThemeModeIcon
+				{...icon}
+				className={cn("size-4 group-active:animate-bounce", icon?.className)}
+			/>
 			{children}
 		</Button>
 	);

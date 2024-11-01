@@ -34,14 +34,28 @@ import type { Chain } from "viem";
 import { localhost } from "viem/chains";
 import { useAccount, useConnect, useDisconnect, useSwitchChain } from "wagmi";
 
-const Wallet = () => {
+type Wallet = ButtonProps & {
+	mini?: boolean;
+};
+const Wallet = ({ mini = false, ...props }: Wallet) => {
 	const { isConnected } = useAccount();
-	return !isConnected ? <Wallet.Connect /> : <Wallet.Account />;
+	return !isConnected ? (
+		<Wallet.Connect mini={mini} {...props} />
+	) : (
+		<Wallet.Account mini={mini} {...props} />
+	);
 };
 export default Wallet;
 
-type WalletConnect = ButtonProps;
-const WalletConnect = ({ className, children, ...props }: WalletConnect) => {
+type WalletConnect = ButtonProps & {
+	mini?: boolean;
+};
+const WalletConnect = ({
+	mini = false,
+	className,
+	children,
+	...props
+}: WalletConnect) => {
 	const { isConnected } = useAccount();
 	const { connectors, connectAsync } = useConnect();
 	const { switchChainAsync } = useSwitchChain();
@@ -52,7 +66,7 @@ const WalletConnect = ({ className, children, ...props }: WalletConnect) => {
 			<DialogTrigger
 				className={cn(
 					ButtonVariants({
-						size: "sm",
+						size: mini ? "icon" : "sm",
 					}),
 					"space-x-2",
 					className,
@@ -62,7 +76,7 @@ const WalletConnect = ({ className, children, ...props }: WalletConnect) => {
 				{children ?? (
 					<>
 						<WalletIcon className="size-4" />
-						<span>Connect Wallet</span>
+						<span className={cn(mini && "sr-only")}>Connect Wallet</span>
 					</>
 				)}
 			</DialogTrigger>
@@ -102,7 +116,15 @@ const WalletConnect = ({ className, children, ...props }: WalletConnect) => {
 };
 Wallet.Connect = WalletConnect;
 
-const WalletAccount = () => {
+type WalletAccount = ButtonProps & {
+	mini?: boolean;
+};
+const WalletAccount = ({
+	mini = false,
+	className,
+	children,
+	...props
+}: WalletAccount) => {
 	const { address, isConnected } = useAccount();
 	const { disconnect } = useDisconnect();
 
@@ -111,20 +133,26 @@ const WalletAccount = () => {
 		<Button
 			className={cn(
 				ButtonVariants({
-					size: "sm",
+					size: mini ? "sm" : "icon",
 				}),
 				"group transition-all",
+				className,
 			)}
 			onClick={() => disconnect()}
+			{...props}
 		>
 			<WalletIcon className="size-4" />
 
-			<span className="group-hover:hidden text-pretty w-24">
-				{getTruncatedAddress({ address })}
-			</span>
-			<span className="hidden group-hover:block text-pretty w-24">
-				Disconnect
-			</span>
+			{!mini && (
+				<>
+					<span className="group-hover:hidden text-pretty w-24">
+						{getTruncatedAddress({ address })}
+					</span>
+					<span className="hidden group-hover:block text-pretty w-24">
+						Disconnect
+					</span>
+				</>
+			)}
 		</Button>
 	);
 };

@@ -60,7 +60,15 @@ function ManageAuctionsPage() {
 						"sm:flex-row flex-wrap sm:place-items-center sm:place-content-between",
 					)}
 				>
-					<h1 className="text-3xl text-pretty truncate flex-1">
+					<h1
+						className={cn(
+							"text-pretty font-black leading-none tracking-tighter text-center",
+							"text-4xl",
+							"bg-gradient-to-br text-transparent bg-gradient-stop bg-clip-text",
+							"dark:from-white dark:via-white dark:via-30% dark:to-white/30",
+							"from-black via-black via-30% to-black/30",
+						)}
+					>
 						Manage Auctions
 					</h1>
 

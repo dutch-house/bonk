@@ -31,6 +31,6 @@
 			"~/*": ["./public/*"]
 		}
 	},
-	"include": ["src", "vite.config.ts", "wagmi.config.ts"],
+	"include": ["src", "vite.config.ts", "wagmi.config.ts", "tailwind.config.ts"],
 	"exclude": ["node_modules"]
 }

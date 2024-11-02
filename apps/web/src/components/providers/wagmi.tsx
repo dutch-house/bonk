@@ -23,15 +23,17 @@ const LocalhostClient = createTestClient({
 	]),
 });
 
+const isProd = process.env.NODE_ENV === "production";
+
 export const WagmiConfig = createConfig({
 	syncConnectedChain: true,
-	chains: [sepolia, localhost],
+	chains: isProd ? [sepolia] : [sepolia, localhost],
 	client: ({ chain }) => {
 		switch (chain.id) {
 			case sepolia.id:
 				return SepoliaClient;
 			default:
-				return LocalhostClient;
+				return isProd ? SepoliaClient : LocalhostClient;
 		}
 	},
 	connectors: [

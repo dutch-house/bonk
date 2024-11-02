@@ -68,11 +68,11 @@ import { type HTMLAttributes, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { formatEther, formatUnits, parseEther } from "viem";
-import { useAccount } from "wagmi";
+import { useAccount, useWaitForTransactionReceipt } from "wagmi";
 import { z } from "zod";
 
 const FormSchema = z.object({
-	bid: z.coerce.number().positive(),
+	bid: z.coerce.number().positive("Bid value must be more than 0"),
 });
 type FormSchema = z.infer<typeof FormSchema>;
 
@@ -114,7 +114,14 @@ const AuctionBidForm = ({
 				enabled: isEnabled && isBiddable,
 			},
 		});
-	const { writeContractAsync } = useWriteAuctionMarketPlaceBid();
+	const { writeContractAsync, data: bidTxHash } =
+		useWriteAuctionMarketPlaceBid();
+	const { refetch: refetchReceipt } = useWaitForTransactionReceipt({
+		hash: bidTxHash,
+		query: {
+			enabled: !!bidTxHash,
+		},
+	});
 	//#endregion  //*======== CLIENT ===========
 
 	//#startregion  //*======== FORM ===========
@@ -156,18 +163,33 @@ const AuctionBidForm = ({
 				address: auction.address,
 			},
 			{
-				onSuccess: (hash) => {
+				onSuccess: async (hash) => {
 					logger(
 						{ breakpoint: "AuctionBidForm/onSubmit/success]" },
 						{
 							hash,
 						},
 					);
-					toast.success("Transaction Success...", {
+					toast.success("Transaction Confirmed", {
 						id: txToast,
 						icon: <TicketCheckIcon className="size-4" />,
-						description: "Request was successfully completed",
+						description: "Request was confirmed",
 					});
+
+					toast.loading("Sending Transaction...", {
+						id: txToast,
+						icon: <LoaderIcon className="size-4" />,
+					});
+
+					const receipt = await refetchReceipt();
+
+					if (receipt.isSuccess) {
+						toast.success("Transaction Success", {
+							id: txToast,
+							icon: <TicketCheckIcon className="size-4" />,
+							description: "Request was successfully completed",
+						});
+					}
 
 					refetch();
 

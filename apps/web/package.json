@@ -6,7 +6,7 @@
 	"description": "client for bonk",
 	"scripts": {
 		"dev": "vite --host 0.0.0.0",
-		"build": "tsc -b && vite build",
+		"build": "dotenv -- tsc -b && vite build",
 		"preview": "vite preview",
 		"generate": "dotenv -- wagmi generate"
 	},

@@ -36,7 +36,7 @@ function ManageAuctionsPage() {
 
 	return (
 		<main className={cn("page-container", "flex flex-col gap-16", "mt-8")}>
-			<section className="space-y-6">
+			<section className="space-y-8">
 				<motion.header
 					variants={{
 						hidden: {
@@ -62,7 +62,7 @@ function ManageAuctionsPage() {
 				>
 					<h1
 						className={cn(
-							"text-pretty font-black leading-none tracking-tighter text-center",
+							"text-pretty font-black leading-none tracking-tighter",
 							"text-4xl",
 							"bg-gradient-to-br text-transparent bg-gradient-stop bg-clip-text",
 							"dark:from-white dark:via-white dark:via-30% dark:to-white/30",

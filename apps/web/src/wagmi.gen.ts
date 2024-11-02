@@ -65,7 +65,7 @@ export const auctionInitiatorAbi = [
 ] as const
 
 export const auctionInitiatorAddress =
-  '0x5FbDB2315678afecb367f032d93F642f64180aa3' as const
+  '0x3B3C479437a2ab9A4D0c22441024B58E5E1e296b' as const
 
 export const auctionInitiatorConfig = {
   address: auctionInitiatorAddress,

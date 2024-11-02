@@ -48,17 +48,17 @@ import {
 import { cn, copyToClipboard } from "@bonk/ui/utils/dom";
 import {
 	BanknoteIcon,
-	CheckCircleIcon,
 	CoinsIcon,
 	CopyIcon,
 	CurrencyIcon,
 	LoaderIcon,
 	ReceiptTextIcon,
+	TicketCheckIcon,
 	XCircleIcon,
 } from "lucide-react";
 import { toast } from "sonner";
 import { formatEther, formatUnits } from "viem";
-import { useAccount, useBalance } from "wagmi";
+import { useAccount, useBalance, useWaitForTransactionReceipt } from "wagmi";
 
 type AuctionDistribute = ButtonProps & {
 	auction: Auction;
@@ -132,9 +132,16 @@ const AuctionDistribute = ({
 			enabled: isEnabled && isCreator && !isDistributable,
 		},
 	});
-	const { writeContractAsync: distributeAsync } =
+	const { writeContractAsync: distributeAsync, data: distributeTxHash } =
 		useWriteAuctionMarketDistributeTokens();
-	const { writeContractAsync: withdrawAsync } = useWriteAuctionMarketWithdraw();
+	const { writeContractAsync: withdrawAsync, data: withdrawTxHash } =
+		useWriteAuctionMarketWithdraw();
+	const { refetch: refetchReceipt } = useWaitForTransactionReceipt({
+		hash: distributeTxHash || withdrawTxHash,
+		query: {
+			enabled: !!withdrawTxHash || !!distributeTxHash,
+		},
+	});
 	//#endregion  //*======== CLIENT ===========
 
 	const onWithdraw = async () => {
@@ -161,31 +168,33 @@ const AuctionDistribute = ({
 				address: auction.address,
 			},
 			{
-				onSuccess: (hash) => {
+				onSuccess: async (hash) => {
 					logger(
 						{ breakpoint: "AuctionDistribute/onWithdraw/success]" },
 						{
 							hash,
 						},
 					);
-					toast.success("Transaction Success...", {
+					toast.success("Transaction Confirmed", {
 						id: txToast,
-						icon: <CheckCircleIcon className="size-4" />,
-						description: "Request was successfully completed",
-						// action: (
-						// 	<Button
-						// 		size={"icon"}
-						// 		variant={"outline"}
-						// 		onClick={() => {
-						// 			copyToClipboard(hash);
-						// 			toast.dismiss();
-						// 		}}
-						// 		className="ml-auto"
-						// 	>
-						// 		<CopyIcon className="size-4" />
-						// 	</Button>
-						// ),
+						icon: <TicketCheckIcon className="size-4" />,
+						description: "Request was confirmed",
 					});
+
+					toast.loading("Sending Transaction...", {
+						id: txToast,
+						icon: <LoaderIcon className="size-4" />,
+					});
+
+					const receipt = await refetchReceipt();
+
+					if (receipt.isSuccess) {
+						toast.success("Transaction Success", {
+							id: txToast,
+							icon: <TicketCheckIcon className="size-4" />,
+							description: "Request was successfully completed",
+						});
+					}
 
 					refetch();
 				},
@@ -237,32 +246,33 @@ const AuctionDistribute = ({
 				address: auction.address,
 			},
 			{
-				onSuccess: (hash) => {
+				onSuccess: async (hash) => {
 					logger(
 						{ breakpoint: "AuctionCreateForm/onSubmit/success]" },
 						{
 							hash,
 						},
 					);
-					toast.success("Transaction Success...", {
+					toast.success("Transaction Confirmed", {
 						id: txToast,
-						icon: <CheckCircleIcon className="size-4" />,
-						description: "Request was successfully completed",
-						// action: (
-						// 	<Button
-						// 		size={"icon"}
-						// 		variant={"outline"}
-						// 		onClick={() => {
-						// 			copyToClipboard(hash);
-						// 			toast.dismiss();
-						// 		}}
-						// 		className="ml-auto"
-						// 	>
-						// 		<CopyIcon className="size-4" />
-						// 	</Button>
-						// ),
+						icon: <TicketCheckIcon className="size-4" />,
+						description: "Request was confirmed",
 					});
 
+					toast.loading("Sending Transaction...", {
+						id: txToast,
+						icon: <LoaderIcon className="size-4" />,
+					});
+
+					const receipt = await refetchReceipt();
+
+					if (receipt.isSuccess) {
+						toast.success("Transaction Success", {
+							id: txToast,
+							icon: <TicketCheckIcon className="size-4" />,
+							description: "Request was successfully completed",
+						});
+					}
 					refetch();
 				},
 				onError: (error) =>

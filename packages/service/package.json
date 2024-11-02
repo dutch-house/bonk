@@ -8,11 +8,12 @@
 		"./types/*": "./types/*.ts"
 	},
 	"scripts": {
-		"clean": "hardhat clean && rm -rf ./ignition/deployments/",
-		"compile": "hardhat compile && hardhat typechain",
-		"node": "NODE_ENV=development hardhat node --verbose --hostname 0.0.0.0",
-		"test": "REPORT_GAS=true hardhat test --typecheck",
-		"deploy:local": "hardhat ignition deploy ignition/modules/AuctionInitiator.ts --network localhost"
+		"clean": "dotenv -- hardhat clean && rm -rf ./ignition/deployments/",
+		"compile": "dotenv -- hardhat compile && dotenv -- hardhat typechain",
+		"node": "NODE_ENV=development dotenv -- hardhat node --verbose --hostname 0.0.0.0",
+		"test": "dotenv -- REPORT_GAS=true hardhat test --typecheck",
+		"deploy:local": "dotenv -- hardhat ignition deploy ignition/modules/AuctionInitiator.ts --network localhost",
+		"deploy:sepolia": "dotenv -- hardhat ignition deploy ignition/modules/AuctionInitiator.ts --network sepolia"
 	},
 	"devDependencies": {
 		"@nomicfoundation/hardhat-chai-matchers": "^2.0.8",

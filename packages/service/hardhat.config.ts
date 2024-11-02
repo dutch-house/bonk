@@ -21,13 +21,12 @@ const config: HardhatUserConfig = {
 			chainId: 1337,
 			loggingEnabled: true,
 		},
-		//? ref: https://docs.alchemy.com/docs/how-to-deploy-a-smart-contract-to-the-sepolia-testnet
+		// //? ref: https://docs.alchemy.com/docs/how-to-deploy-a-smart-contract-to-the-sepolia-testnet
 		// sepolia: {
 		// 	url: `${process.env.SEPOLIA_GATEWAY_URL}`,
-		// 	accounts: [`0x${process.env.SEPOLIA_PRIVATE_KEY}`]
-		// }
+		// 	accounts: [`${process.env.SEPOLIA_PRIVATE_KEY}`],
+		// },
 	},
-	// defaultNetwork: "hardhat",
 	typechain: {
 		outDir: "types",
 		target: "ethers-v6",

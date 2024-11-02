@@ -31,7 +31,7 @@ import { CheckIcon, ShieldQuestionIcon, WalletIcon } from "lucide-react";
 import { type HTMLAttributes, useState } from "react";
 import { toast } from "sonner";
 import type { Chain } from "viem";
-import { localhost } from "viem/chains";
+import { sepolia } from "viem/chains";
 import { useAccount, useConnect, useDisconnect, useSwitchChain } from "wagmi";
 
 type Wallet = ButtonProps & {
@@ -56,9 +56,9 @@ const WalletConnect = ({
 	children,
 	...props
 }: WalletConnect) => {
-	const { isConnected } = useAccount();
+	const { isConnected, chain } = useAccount();
 	const { connectors, connectAsync } = useConnect();
-	const { switchChainAsync } = useSwitchChain();
+	const { chains, switchChainAsync } = useSwitchChain();
 
 	if (isConnected) return null;
 	return (
@@ -99,7 +99,11 @@ const WalletConnect = ({
 						<Button
 							key={`wallet-connector-${connector.uid}`}
 							onClick={async () => {
-								const chainId = localhost.id;
+								if (!chains.length) return;
+								const isValidChain = !!chain && chains.includes(chain);
+								if (isValidChain) return;
+
+								const chainId = chains?.[0]?.id ?? sepolia.id;
 								const result = await connectAsync({ connector, chainId });
 								if (result.chainId !== chainId) {
 									await switchChainAsync({ chainId });
@@ -133,7 +137,7 @@ const WalletAccount = ({
 		<Button
 			className={cn(
 				ButtonVariants({
-					size: mini ? "sm" : "icon",
+					size: mini ? "icon" : "sm",
 				}),
 				"group transition-all",
 				className,

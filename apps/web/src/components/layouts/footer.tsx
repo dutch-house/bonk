@@ -76,7 +76,7 @@ const FooterBlock = ({ className, children, ...props }: FooterBlock) => {
 			{...props}
 		>
 			<BoxesIcon className="size-3" />
-			<span>Block: {Number(blockNumber)}</span>
+			<span className="text-xs">Block {Number(blockNumber)}</span>
 		</Button>
 	);
 };

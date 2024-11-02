@@ -42,9 +42,9 @@ export const Route = createRootRoute({
 					<Footer />
 				</Suspense>
 
-				<Suspense>
+				{/* <Suspense>
 					<RouterProvider.Devtools />
-				</Suspense>
+				</Suspense> */}
 			</Fragment>
 		);
 	},

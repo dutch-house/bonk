@@ -36,8 +36,13 @@ export type Auction = z.infer<typeof Auction>;
 export const CreateAuctionRequest = z.object({
 	name: z.string().trim().min(1).max(10),
 	symbol: z.string().trim().toUpperCase().min(3).max(5),
-	totalSupply: z.coerce.number().int().positive().min(10).default(1000),
-	startPrice: z.coerce.number().positive().min(1).default(1),
+	totalSupply: z.coerce
+		.number()
+		.int()
+		.positive("Total supply must be greater than zero")
+		.min(10)
+		.default(1000),
+	startPrice: z.coerce.number().positive().default(1),
 	reservedPrice: z.coerce.number().positive().default(0.5),
 });
 export type CreateAuctionRequest = z.infer<typeof CreateAuctionRequest>;

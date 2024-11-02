@@ -1,24 +1,18 @@
+import { env } from "@/env";
 import type { PropsWithChildren } from "react";
-import { http, createTestClient, fallback } from "viem";
+import { http, createPublicClient, createTestClient, fallback } from "viem";
 import { WagmiProvider as Wagmi, type WagmiProviderProps } from "wagmi";
 
 import { createConfig } from "wagmi";
-import { localhost } from "wagmi/chains";
+import { localhost, sepolia } from "wagmi/chains";
 import { coinbaseWallet, injected, metaMask } from "wagmi/connectors";
 
-// const MainnetClient = createPublicClient({
-// 	chain: mainnet,
-// 	transport: http(
-// 		`https://eth-mainnet.g.alchemy.com/v2/${env.VITE_ALCHEMY_API_KEY}`,
-// 	),
-// });
-
-// const SepoliaClient = createPublicClient({
-// 	chain: sepolia,
-// 	transport: http(
-// 		`https://eth-mainnet.g.alchemy.com/v2/${env.VITE_ALCHEMY_API_KEY}`,
-// 	),
-// });
+const SepoliaClient = createPublicClient({
+	chain: sepolia,
+	transport: http(
+		`https://eth-sepolia.g.alchemy.com/v2/${env.VITE_ALCHEMY_API_KEY}`,
+	),
+});
 
 const LocalhostClient = createTestClient({
 	chain: localhost,
@@ -31,21 +25,12 @@ const LocalhostClient = createTestClient({
 
 export const WagmiConfig = createConfig({
 	syncConnectedChain: true,
-	chains: [
-		// mainnet,
-		// sepolia,
-		localhost,
-	],
+	chains: [sepolia, localhost],
 	client: ({ chain }) => {
 		switch (chain.id) {
-			// case mainnet.id:
-			// 	return MainnetClient;
-			// case sepolia.id:
-			// 	return SepoliaClient;
-			case localhost.id:
-				return LocalhostClient;
+			case sepolia.id:
+				return SepoliaClient;
 			default:
-				// return createClient({ chain, transport: http() });
 				return LocalhostClient;
 		}
 	},

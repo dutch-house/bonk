@@ -50,7 +50,7 @@ import { type HTMLAttributes, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { parseEther } from "viem";
-import { useAccount } from "wagmi";
+import { useAccount, useWaitForTransactionReceipt } from "wagmi";
 import type { z } from "zod";
 
 const FormSchema = CreateAuctionRequest;
@@ -87,7 +87,14 @@ const AuctionCreateForm = ({
 				enabled: false,
 			},
 		});
-	const { writeContractAsync } = useWriteAuctionInitiatorCreateAuction();
+	const { writeContractAsync, data: txHash } =
+		useWriteAuctionInitiatorCreateAuction();
+	const { refetch: refetchReceipt } = useWaitForTransactionReceipt({
+		hash: txHash,
+		query: {
+			enabled: !!txHash,
+		},
+	});
 	//#endregion  //*======== CLIENT ===========
 
 	//#startregion  //*======== FORM ===========
@@ -109,6 +116,14 @@ const AuctionCreateForm = ({
 
 	const onSubmit = async (values: FormSchema) => {
 		if (!isEnabled) return;
+		// validation: start price > reserved price
+		if (values.startPrice <= values.reservedPrice) {
+			form.setError("startPrice", {
+				type: "value",
+				message: "Start price must be greater than reserved price",
+			});
+			return;
+		}
 		logger(
 			{ breakpoint: "AuctionCreateForm/onSubmit]" },
 			{
@@ -137,32 +152,33 @@ const AuctionCreateForm = ({
 				],
 			},
 			{
-				onSuccess: (hash) => {
+				onSuccess: async (hash) => {
 					logger(
 						{ breakpoint: "AuctionCreateForm/onSubmit/success]" },
 						{
 							hash,
 						},
 					);
-					toast.success("Transaction Success...", {
+					toast.success("Transaction Confirmed", {
 						id: txToast,
 						icon: <TicketCheckIcon className="size-4" />,
-						description: "Request was successfully completed",
-						// action: (
-						// 	<Button
-						// 		size={"icon"}
-						// 		variant={"outline"}
-						// 		onClick={() => {
-						// 			copyToClipboard(hash);
-						// 			toast.dismiss();
-						// 		}}
-						// 		className="ml-auto"
-						// 	>
-						// 		<CopyIcon className="size-4" />
-						// 	</Button>
-						// ),
+						description: "Request was confirmed",
 					});
 
+					toast.loading("Sending Transaction...", {
+						id: txToast,
+						icon: <LoaderIcon className="size-4" />,
+					});
+
+					const receipt = await refetchReceipt();
+
+					if (receipt.isSuccess) {
+						toast.success("Transaction Success", {
+							id: txToast,
+							icon: <TicketCheckIcon className="size-4" />,
+							description: "Request was successfully completed",
+						});
+					}
 					refetchAllAuctions();
 					refetchCreatedAuctions();
 					if (onFormSubmit) onFormSubmit(values);

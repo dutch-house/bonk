@@ -24,3 +24,9 @@ pnpm run generate
 pnpm run dev
 ```
 
+
+---
+
+Faucets
+- https://faucetlink.to/sepolia
+- https://cloud.google.com/application/web3/faucet/ethereum/sepolia

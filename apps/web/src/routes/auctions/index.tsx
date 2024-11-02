@@ -85,7 +85,7 @@ function AuctionsPage() {
 				</motion.header>
 
 				<AuctionsGrid auctions={data}>
-					{!data.length && (
+					{!isLoading && !data.length && (
 						<div
 							className={cn(
 								"transition-all",

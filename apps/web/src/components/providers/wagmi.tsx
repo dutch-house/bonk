@@ -26,6 +26,7 @@ const LocalhostClient = createTestClient({
 const isProd = process.env.NODE_ENV === "production";
 
 export const WagmiConfig = createConfig({
+	autoConnect: true,
 	syncConnectedChain: true,
 	chains: isProd ? [sepolia] : [sepolia, localhost],
 	client: ({ chain }) => {

@@ -39,7 +39,7 @@ import AuctionBid from "./auction.bid";
 import AuctionDistribute from "./auction.distribute";
 
 type AuctionCard = HTMLAttributes<HTMLDivElement> & {
-	address: Address;
+	address?: Address;
 };
 const AuctionCard = ({
 	address,

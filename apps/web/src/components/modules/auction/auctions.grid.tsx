@@ -14,7 +14,7 @@ export const AuctionsGrid = ({
 	children,
 	...props
 }: AuctionsGrid) => {
-	if (!auctions.length) return null;
+	// if (!auctions.length) return null;
 	return (
 		<motion.section
 			variants={{
@@ -33,19 +33,32 @@ export const AuctionsGrid = ({
 			animate="visible"
 			exit="exit"
 			className={cn(
+				"relative",
 				"grid grid-flow-row-dense auto-rows-fr gap-2",
 				"grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-flow-rows-dense xl:auto-rows-fr",
 				className,
 			)}
 			{...props}
 		>
-			{auctions.map((address) => (
-				<AuctionCard
-					address={address}
-					key={`auction-${address}`}
-					className={cn("*:p-4 *:space-y-0 *:!text-xs")}
-				/>
-			))}
+			{!!auctions.length &&
+				auctions.map((address) => (
+					<AuctionCard
+						address={address}
+						key={`auction-${address}`}
+						className={cn("*:p-4 *:space-y-0 *:!text-xs")}
+					/>
+				))}
+			{!auctions.length &&
+				Array.from({ length: 6 }, (_, idx) => idx).map((id) => (
+					<AuctionCard
+						key={`auction-${id}`}
+						className={cn(
+							"*:p-4 *:space-y-0 *:!text-xs",
+							id > 1 && "max-sm:hidden",
+							id > 3 && "max-md:hidden",
+						)}
+					/>
+				))}
 			{children}
 		</motion.section>
 	);

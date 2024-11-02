@@ -9,7 +9,7 @@
 	},
 	"scripts": {
 		"clean": "dotenv -- hardhat clean && rm -rf ./ignition/deployments/",
-		"compile": "dotenv -- hardhat compile && dotenv -- hardhat typechain",
+		"build": "dotenv -- hardhat compile && dotenv -- hardhat typechain",
 		"node": "NODE_ENV=development dotenv -- hardhat node --verbose --hostname 0.0.0.0",
 		"test": "dotenv -- REPORT_GAS=true hardhat test --typecheck",
 		"deploy:local": "dotenv -- hardhat ignition deploy ignition/modules/AuctionInitiator.ts --network localhost",

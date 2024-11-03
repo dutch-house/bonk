@@ -154,7 +154,7 @@ importers:
         version: 1.0.12(hardhat@2.22.15(bufferutil@4.0.8)(ts-node@10.9.2(@swc/core@1.7.42)(@types/node@22.8.7)(typescript@5.6.3))(typescript@5.6.3)(utf-8-validate@5.0.10))
       '@nomicfoundation/hardhat-toolbox-viem':
         specifier: ^3.0.0
-        version: 3.0.0(jokrzr6r2wnrzezk3xqk6jqdv4)
+        version: 3.0.0(nfrcixu3sinjwcry2atrl4d2hq)
       '@nomicfoundation/hardhat-verify':
         specifier: ^2.0.11
         version: 2.0.11(hardhat@2.22.15(bufferutil@4.0.8)(ts-node@10.9.2(@swc/core@1.7.42)(@types/node@22.8.7)(typescript@5.6.3))(typescript@5.6.3)(utf-8-validate@5.0.10))
@@ -171,8 +171,8 @@ importers:
         specifier: ^4.3.20
         version: 4.3.20
       '@types/chai-as-promised':
-        specifier: ^7.1.8
-        version: 7.1.8
+        specifier: ^8.0.0
+        version: 8.0.1
       '@types/mocha':
         specifier: ^10.0.9
         version: 10.0.9
@@ -3127,6 +3127,9 @@ packages:
 
   '@types/chai-as-promised@7.1.8':
     resolution: {integrity: sha512-ThlRVIJhr69FLlh6IctTXFkmhtP3NpMZ2QGq69StYLyKZFp/HOp1VdKZj7RvfNWYYcJ1xlbLGLLWj1UvP5u/Gw==}
+
+  '@types/chai-as-promised@8.0.1':
+    resolution: {integrity: sha512-dAlDhLjJlABwAVYObo9TPWYTRg9NaQM5CXeaeJYcYAkvzUf0JRLIiog88ao2Wqy/20WUnhbbUZcgvngEbJ3YXQ==}
 
   '@types/chai@4.3.20':
     resolution: {integrity: sha512-/pC9HAB5I/xMlc5FP77qjCnI16ChlJfW0tGa0IUcFn38VJrTV6DeZ60NU5KZBtaOZqjdpwTWohz5HU1RrhiYxQ==}
@@ -9026,14 +9029,14 @@ snapshots:
       ethereumjs-util: 7.1.5
       hardhat: 2.22.15(bufferutil@4.0.8)(ts-node@10.9.2(@swc/core@1.7.42)(@types/node@22.8.7)(typescript@5.6.3))(typescript@5.6.3)(utf-8-validate@5.0.10)
 
-  '@nomicfoundation/hardhat-toolbox-viem@3.0.0(jokrzr6r2wnrzezk3xqk6jqdv4)':
+  '@nomicfoundation/hardhat-toolbox-viem@3.0.0(nfrcixu3sinjwcry2atrl4d2hq)':
     dependencies:
       '@nomicfoundation/hardhat-ignition-viem': 0.15.7(kniqialq6hm3wbqclwz2qyihuu)
       '@nomicfoundation/hardhat-network-helpers': 1.0.12(hardhat@2.22.15(bufferutil@4.0.8)(ts-node@10.9.2(@swc/core@1.7.42)(@types/node@22.8.7)(typescript@5.6.3))(typescript@5.6.3)(utf-8-validate@5.0.10))
       '@nomicfoundation/hardhat-verify': 2.0.11(hardhat@2.22.15(bufferutil@4.0.8)(ts-node@10.9.2(@swc/core@1.7.42)(@types/node@22.8.7)(typescript@5.6.3))(typescript@5.6.3)(utf-8-validate@5.0.10))
       '@nomicfoundation/hardhat-viem': 2.0.5(hardhat@2.22.15(bufferutil@4.0.8)(ts-node@10.9.2(@swc/core@1.7.42)(@types/node@22.8.7)(typescript@5.6.3))(typescript@5.6.3)(utf-8-validate@5.0.10))(typescript@5.6.3)(viem@2.21.40(bufferutil@4.0.8)(typescript@5.6.3)(utf-8-validate@5.0.10)(zod@3.23.8))(zod@3.23.8)
       '@types/chai': 4.3.20
-      '@types/chai-as-promised': 7.1.8
+      '@types/chai-as-promised': 8.0.1
       '@types/mocha': 10.0.9
       '@types/node': 22.8.7
       chai: 4.5.0
@@ -10290,6 +10293,10 @@ snapshots:
       '@types/node': 22.8.7
 
   '@types/chai-as-promised@7.1.8':
+    dependencies:
+      '@types/chai': 4.3.20
+
+  '@types/chai-as-promised@8.0.1':
     dependencies:
       '@types/chai': 4.3.20
 

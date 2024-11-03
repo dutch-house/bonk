@@ -2,8 +2,8 @@
 	"name": "bonk",
 	"private": true,
 	"scripts": {
-		"build": "turbo build",
-		"dev": "turbo dev",
+		"build": "dotenv -- turbo build",
+		"dev": "dotenv -- turbo dev --parallel",
 		"fix": "biome check . --write",
 		"lint": "biome check ."
 	},

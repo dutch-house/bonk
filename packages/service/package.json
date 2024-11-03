@@ -26,19 +26,19 @@
 		"@nomicfoundation/hardhat-viem": "^2.0.5",
 		"@typechain/ethers-v6": "^0.5.1",
 		"@typechain/hardhat": "^9.1.0",
-		"@types/chai": "^4.3.20",
-		"@types/chai-as-promised": "^7.1.8",
+		"@types/chai": "^5.0.1",
+		"@types/chai-as-promised": "^8.0.1",
 		"@types/mocha": "^10.0.9",
-		"@types/node": "^22.8.4",
-		"chai": "^4.5.0",
+		"@types/node": "^22.8.7",
+		"chai": "^5.1.2",
 		"ethers": "^6.13.4",
 		"hardhat": "^2.22.15",
-		"hardhat-gas-reporter": "^1.0.10",
+		"hardhat-gas-reporter": "^2.2.1",
 		"solidity-coverage": "^0.8.13",
 		"ts-node": "^10.9.2",
 		"tsconfig-paths": "^4.2.0",
 		"typechain": "^8.3.2",
 		"typescript": "~5.6.3",
-		"viem": "^2.21.36"
+		"viem": "^2.21.40"
 	}
 }

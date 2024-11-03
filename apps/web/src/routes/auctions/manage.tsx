@@ -94,8 +94,12 @@ function ManageAuctionsPage() {
 					</aside>
 				</motion.header>
 
-				{isConnected && <AuctionsGrid auctions={data} />}
 				{!isConnected && <Wallet.Required />}
+				{isConnected && (
+					<AuctionsGrid auctions={data}>
+						{!isLoading && !data.length && <AuctionsGrid.Empty />}
+					</AuctionsGrid>
+				)}
 			</section>
 		</main>
 	);

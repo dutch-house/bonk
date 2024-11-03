@@ -6,7 +6,6 @@ import { cn } from "@bonk/ui/utils/dom";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { BadgeHelpIcon } from "lucide-react";
 
 export const Route = createFileRoute("/auctions/")({
 	component: AuctionsPage,
@@ -85,41 +84,7 @@ function AuctionsPage() {
 				</motion.header>
 
 				<AuctionsGrid auctions={data}>
-					{!isLoading && !data.length && (
-						<div
-							className={cn(
-								"transition-all",
-								"bg-background/50 backdrop-blur-sm",
-								"absolute inset-0 z-30",
-
-								"flex flex-col place-items-center md:place-content-center gap-y-4 py-8",
-							)}
-						>
-							<div
-								className={cn(
-									"bg-primary/10 rounded-full",
-									"size-12",
-									"flex place-items-center place-content-center",
-								)}
-							>
-								<BadgeHelpIcon className="text-primary size-6" />
-							</div>
-
-							<h3
-								className={cn(
-									"text-2xl font-bold leading-none tracking-tight text-balance whitespace-break-spaces text-center",
-								)}
-							>
-								Huh, it seems empty here.
-							</h3>
-
-							<p className="text-sm text-gray-500 mb-4 text-center text-balance whitespace-break-spaces max-w-prose max-sm:px-6 sm:w-9/12">
-								There's nothing listed yet. Create one to kick things off.
-							</p>
-
-							<AuctionCreate className="max-w-sm w-10/12" />
-						</div>
-					)}
+					{!isLoading && !data.length && <AuctionsGrid.Empty />}
 				</AuctionsGrid>
 			</section>
 		</main>

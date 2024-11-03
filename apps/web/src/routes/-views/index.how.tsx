@@ -1,38 +1,78 @@
+import { CHAIN_DENOM, DEFINITIONS } from "@/data/clients/bonk/constants";
+import AnimateFade from "@bonk/ui/components/flairs/animate.fade";
+import Button from "@bonk/ui/components/ui/button";
 import {
 	Card,
+	CardContent,
 	CardDescription,
+	CardFooter,
 	CardHeader,
 	CardTitle,
 } from "@bonk/ui/components/ui/card";
+import { Progress } from "@bonk/ui/components/ui/progress";
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipProvider,
+	TooltipTrigger,
+} from "@bonk/ui/components/ui/tooltip";
 import { cn } from "@bonk/ui/utils/dom";
 import { motion } from "framer-motion";
-import { Clock, Coins, TrendingDown } from "lucide-react";
+import { ClockIcon, TrendingDownIcon, TrophyIcon } from "lucide-react";
+import { useState } from "react";
+
+const steps = [
+	{
+		title: "Set Starting Price",
+		description: "The auction begins with a high starting price.",
+		icon: ClockIcon,
+	},
+	{
+		title: "Price Decreases",
+		description: "As time passes, the price continues to drop.",
+		icon: TrendingDownIcon,
+	},
+	{
+		title: "First Bid Wins",
+		description:
+			"The first bidder to accept the current price wins the auction.",
+		icon: TrophyIcon,
+	},
+];
 
 export default function How() {
+	//#startregion  //*======== STATES ===========
+	const [step, setStep] = useState<number>(0);
+	const [price, setPrice] = useState<number>(100);
+	//#endregion  //*======== STATES ===========
+
+	const onStep = (step: number) => {
+		if (step < 2) {
+			setStep(step + 1);
+			setPrice(Math.max(step - 25, 25));
+		} else {
+			setStep(0);
+			setPrice(100);
+		}
+	};
+
 	return (
-		<motion.section
-			variants={{
-				hidden: {
-					opacity: 0,
-					scale: 1.5,
-				},
-				visible: {
-					opacity: 1,
-					scale: 1,
-					transition: {
-						staggerChildren: 0.09,
-					},
-				},
-			}}
-			initial="hidden"
-			animate={"visible"}
-			transition={{ duration: 0.3, ease: "easeInOut" }}
+		<AnimateFade
+			delay={0.25}
+			inView
 			className={cn(
-				"min-h-[50dvh] relative",
+				"content-container relative",
 				"flex flex-col place-content-center place-items-center gap-8",
 			)}
 		>
-			<h2
+			<motion.h2
+				initial="hidden"
+				animate="visible"
+				transition={{ duration: 1, ease: "easeInOut", staggerChildren: 0.09 }}
+				variants={{
+					hidden: { filter: "blur(10px)", opacity: 0 },
+					visible: { filter: "blur(0px)", opacity: 1 },
+				}}
 				className={cn(
 					"text-pretty font-bold leading-none tracking-tighter text-center",
 					"text-4xl",
@@ -42,45 +82,102 @@ export default function How() {
 				)}
 			>
 				How Dutch Auctions Work
-			</h2>
-			<div className="grid gap-6 lg:grid-cols-3 lg:gap-12">
-				<Card>
+			</motion.h2>
+
+			<section className="grid md:grid-cols-2 gap-12 items-center">
+				<div className="space-y-8">
+					{steps.map((guide, index) => (
+						<Card
+							key={`guide-${guide.title}`}
+							onClick={() => onStep(index - 1)}
+							className={`transition-all duration-300 ${step === index ? "border-primary shadow-lg" : "opacity-50"}`}
+						>
+							<CardContent className="p-6 flex items-start space-x-4">
+								<guide.icon className="size-8 text-primary shrink-0" />
+								<div>
+									<h3 className="text-xl font-semibold mb-2">{guide.title}</h3>
+									<p className="text-muted-foreground">{guide.description}</p>
+								</div>
+							</CardContent>
+						</Card>
+					))}
+				</div>
+
+				<Card className="relative">
+					<motion.div
+						className="size-3/5 bg-primary/50 aspect-square blur-xl absolute -z-10"
+						animate={{
+							top: ["-1rem", "-1rem", "1rem", "1rem", "-1rem"],
+							left: ["-1rem", "1rem", "1rem", "-1rem", "-1rem"],
+							scale: [1, 1, 1],
+						}}
+						transition={{
+							duration: 6,
+							repeat: Number.POSITIVE_INFINITY,
+							repeatType: "mirror",
+						}}
+					/>
+					<motion.div
+						className="size-3/5 bg-primary/50 aspect-square blur-xl absolute -z-10"
+						animate={{
+							bottom: ["-1rem", "-1rem", "1rem", "1rem", "-1rem"],
+							right: ["-1rem", "1rem", "1rem", "-1rem", "-1rem"],
+							scale: [1, 1, 1],
+						}}
+						transition={{
+							duration: 6,
+							repeat: Number.POSITIVE_INFINITY,
+							repeatType: "mirror",
+						}}
+					/>
 					<CardHeader>
-						<CardTitle className="flex items-center gap-2">
-							<TrendingDown className="size-6 text-primary" />
-							<span className="font-bold">1. Set Starting Price</span>
-						</CardTitle>
-						<CardDescription className="text-base">
-							The auction begins with a high starting price that gradually
-							decreases over time.
+						<CardTitle>Auction Simulation</CardTitle>
+						<CardDescription>
+							Watch how the price changes as the auction progresses
 						</CardDescription>
 					</CardHeader>
+					<CardContent className="flex flex-col place-items-center place-content-center gap-4">
+						<div className="flex flex-row place-items-center place gap-x-6 gap-y-4">
+							<TooltipProvider>
+								<Tooltip>
+									<TooltipTrigger className="text-start text-sm font-medium text-muted-foreground capitalize underline-offset-4 underline decoration-dotted hover:decoration-solid decoration-muted-foreground cursor-help">
+										Current Price
+									</TooltipTrigger>
+									<TooltipContent className="max-w-80 text-pretty normal-case">
+										{DEFINITIONS["Current Price"]}
+									</TooltipContent>
+								</Tooltip>
+							</TooltipProvider>
+							<p className="text-5xl font-bold text-primary text-center">
+								{price}
+								&nbsp;
+								<span className="text-xs text-muted-foreground">
+									{CHAIN_DENOM}
+								</span>
+							</p>
+						</div>
+					</CardContent>
+					<CardFooter>
+						<Button
+							size="default"
+							onClick={() => onStep(step)}
+							className="w-full relative"
+						>
+							<span>{step < 2 ? "Advance Time" : "Reset Auction"}</span>
+
+							<Progress
+								value={((step + 1) / steps.length) * 100}
+								className={cn(
+									"absolute bottom-0 inset-x-0 z-30 h-1 bg-background/20",
+								)}
+								indicator={{
+									className: "bg-background/50",
+								}}
+							/>
+						</Button>
+					</CardFooter>
 				</Card>
-				<Card>
-					<CardHeader>
-						<CardTitle className="flex items-center gap-2">
-							<Clock className="size-6 text-primary" />
-							<span className="font-bold">2. Price Decreases</span>
-						</CardTitle>
-						<CardDescription className="text-base">
-							As time passes, the price continues to drop until a buyer decides
-							to make a purchase.
-						</CardDescription>
-					</CardHeader>
-				</Card>
-				<Card>
-					<CardHeader>
-						<CardTitle className="flex items-center gap-2">
-							<Coins className="size-6 text-primary" />
-							<span className="font-bold">3. First Bid Wins</span>
-						</CardTitle>
-						<CardDescription className="text-base">
-							The first bidder to accept the current price wins the auction and
-							purchases the item.
-						</CardDescription>
-					</CardHeader>
-				</Card>
-			</div>
-		</motion.section>
+			</section>
+		</AnimateFade>
 	);
 }

@@ -1,3 +1,4 @@
+import BackgroundRipple from "@bonk/ui/components/flairs/background.ripple";
 import TextGradient from "@bonk/ui/components/flairs/text.gradient";
 import Button from "@bonk/ui/components/ui/button";
 import { cn } from "@bonk/ui/utils/dom";
@@ -24,12 +25,19 @@ const Hero = () => {
 			}}
 			initial="hidden"
 			animate={"visible"}
-			transition={{ duration: 0.3, ease: "easeInesOut" }}
+			transition={{ duration: 0.5, ease: "easeInOut" }}
 			className={cn(
-				"min-h-[50dvh] relative",
+				"min-h-[70dvh] relative",
 				"flex flex-col place-content-center place-items-center gap-8",
+				"[&>*:not(:first-child)]:relative [&>*:not(:first-child)]:z-10",
 			)}
 		>
+			<BackgroundRipple
+				className="-z-10 [mask-image:radial-gradient(100vw_circle_at_center,white,transparent)]"
+				circle={{
+					className: "bg-primary/50",
+				}}
+			/>
 			<div className="group/header flex flex-col place-content-center place-items-center gap-2">
 				<TextGradient className="gap-x-1.5">
 					<SparkleIcon className="size-4 text-[#ffaa40]" />
@@ -44,7 +52,14 @@ const Hero = () => {
 				</TextGradient>
 
 				<header className="relative">
-					<h1
+					<motion.h1
+						initial="hidden"
+						animate="visible"
+						transition={{ duration: 1, ease: "easeInOut" }}
+						variants={{
+							hidden: { filter: "blur(10px)", opacity: 0 },
+							visible: { filter: "blur(0px)", opacity: 1 },
+						}}
 						className={cn(
 							"text-pretty font-bold leading-none tracking-tighter text-center",
 							"text-5xl sm:text-6xl",
@@ -54,10 +69,17 @@ const Hero = () => {
 						)}
 					>
 						Bid, Bond, Bonk
-					</h1>
+					</motion.h1>
 				</header>
 
-				<p
+				<motion.p
+					initial="hidden"
+					animate="visible"
+					transition={{ duration: 1.5, ease: "easeInOut" }}
+					variants={{
+						hidden: { filter: "blur(10px)", opacity: 0 },
+						visible: { filter: "blur(0px)", opacity: 1 },
+					}}
 					className={cn(
 						"text-lg",
 						"w-11/12 max-w-prose",
@@ -69,7 +91,7 @@ const Hero = () => {
 				>
 					Secure, transparent, and fair decentralized auctions. Your gateway to
 					a new era of digital ownership.
-				</p>
+				</motion.p>
 			</div>
 
 			<Link to="/auctions">

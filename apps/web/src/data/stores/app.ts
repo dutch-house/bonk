@@ -14,7 +14,7 @@ export type Theme = z.infer<typeof Theme>;
 
 const Name = `${StoreSlicePrefix}app`;
 const State = z.object({
-	theme: Theme.default("light"),
+	theme: Theme.default("dark"),
 });
 type State = z.infer<typeof State>;
 

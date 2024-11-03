@@ -59,10 +59,10 @@ coverage
 /cache
 /artifacts
 
-# # TypeChain files
+# TypeChain files
 # /typechain
 # /typechain-types
-# /types
+packages/service/types/
 
 # solidity-coverage files
 /coverage

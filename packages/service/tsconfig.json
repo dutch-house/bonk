@@ -10,8 +10,7 @@
 
 		"baseUrl": ".",
 		"paths": {
-			"@/*": ["./src/*"],
-			"~/*": ["./public/*"]
+			"@/*": ["./src/*"]
 		}
 	},
 	"include": ["./deploy/*.ts", "./test/*.ts", "./scripts/*.ts", "./types/*.ts"],

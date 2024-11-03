@@ -30,3 +30,7 @@ pnpm run dev
 Faucets
 - https://faucetlink.to/sepolia
 - https://cloud.google.com/application/web3/faucet/ethereum/sepolia
+
+
+Dependencies Issues
+- https://github.com/NomicFoundation/hardhat/issues/4762#issuecomment-2352671446

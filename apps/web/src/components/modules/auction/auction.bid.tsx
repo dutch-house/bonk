@@ -170,16 +170,16 @@ const AuctionBidForm = ({
 							hash,
 						},
 					);
-					toast.success("Transaction Confirmed", {
+					toast.info("Transaction Confirmed", {
 						id: txToast,
 						icon: <TicketCheckIcon className="size-4" />,
 						description: "Request was confirmed",
 					});
 
-					toast.loading("Sending Transaction...", {
-						id: txToast,
-						icon: <LoaderIcon className="size-4" />,
-					});
+					// toast.loading("Sending Transaction...", {
+					// 	id: txToast,
+					// 	icon: <LoaderIcon className="size-4" />,
+					// });
 
 					const receipt = await refetchReceipt();
 
@@ -283,15 +283,13 @@ const AuctionBidForm = ({
 						</span>
 						<p className="text-2xl font-bold">
 							~
-							{Math.ceil(
-								Number.parseFloat(
-									currentPrice > 0
-										? Math.max(
-												0,
-												Number(accountCommitments / currentPrice),
-											).toFixed(4)
-										: "0",
-								),
+							{Number.parseFloat(
+								currentPrice > 0
+									? Math.max(
+											0,
+											Number(accountCommitments / currentPrice),
+										).toFixed(4)
+									: "0",
 							)}
 							&nbsp;
 							<span className="text-xs text-muted-foreground">

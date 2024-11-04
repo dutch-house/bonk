@@ -618,7 +618,11 @@ const AuctionDistribute = ({
 						disabled={!isEnabled || !isDistributable}
 					>
 						<span>
-							{isDistributable ? "Distribute Tokens" : "Distributed Tokens"}
+							{isDistributable
+								? isCreator
+									? "Distribute Tokens"
+									: "Claim Tokens"
+								: "Distributed Tokens"}
 						</span>
 					</Button>
 					{isCreator && (

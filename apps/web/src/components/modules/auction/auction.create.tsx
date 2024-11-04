@@ -159,16 +159,16 @@ const AuctionCreateForm = ({
 							hash,
 						},
 					);
-					toast.success("Transaction Confirmed", {
+					toast.info("Transaction Confirmed", {
 						id: txToast,
 						icon: <TicketCheckIcon className="size-4" />,
 						description: "Request was confirmed",
 					});
 
-					toast.loading("Sending Transaction...", {
-						id: txToast,
-						icon: <LoaderIcon className="size-4" />,
-					});
+					// toast.loading("Sending Transaction...", {
+					// 	id: txToast,
+					// 	icon: <LoaderIcon className="size-4" />,
+					// });
 
 					const receipt = await refetchReceipt();
 

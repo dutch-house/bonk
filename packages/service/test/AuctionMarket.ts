@@ -10,12 +10,13 @@ describe("AuctionMarket", () => {
 	let owner: HardhatEthersSigner;
 	let bidder1: HardhatEthersSigner;
 	let bidder2: HardhatEthersSigner;
+	let nonBidder: HardhatEthersSigner;
 	let startPrice: bigint;
 	let reservedPrice: bigint;
 	let duration: number;
 
 	beforeEach(async () => {
-		[owner, bidder1, bidder2] = await hre.ethers.getSigners();
+		[owner, bidder1, bidder2, nonBidder] = await hre.ethers.getSigners();
 		const DutchAuctionFactory =
 			await hre.ethers.getContractFactory("AuctionMarket");
 
@@ -172,25 +173,50 @@ describe("AuctionMarket", () => {
 			expect(remainingSupply).to.equal(0);
 		});
 
-		it("Should allow only the creator to distribute tokens", async () => {
+		it("Should allow the creator to distribute tokens", async () => {
 			const bidAmount = hre.ethers.parseEther("1.0");
 
 			// Place bids to ensure some commitments are in place
 			await auction.connect(bidder1).placeBid({ value: bidAmount });
-			await auction.connect(bidder2).placeBid({ value: bidAmount });
 
 			// Fast forward time to end the auction
 			await hre.ethers.provider.send("evm_increaseTime", [duration + 1]);
 			await hre.ethers.provider.send("evm_mine", []);
 
-			// Attempt to call distributeTokens as a non-creator
-			await expect(
-				auction.connect(bidder1).distributeTokens(),
-			).to.be.revertedWith("Only the creator can distribute tokens");
-
-			// Attempt to call distributeTokens as the creator
+			// Attempt to call distributeTokens as a bidder who placed a bid
 			await expect(auction.connect(owner).distributeTokens()).to.not.be
 				.reverted;
+		});
+
+		it("Should allow a bidder to distribute tokens", async () => {
+			const bidAmount = hre.ethers.parseEther("1.0");
+
+			// Place bids to ensure some commitments are in place
+			await auction.connect(bidder1).placeBid({ value: bidAmount });
+
+			// Fast forward time to end the auction
+			await hre.ethers.provider.send("evm_increaseTime", [duration + 1]);
+			await hre.ethers.provider.send("evm_mine", []);
+
+			// Attempt to call distributeTokens as a bidder who placed a bid
+			await expect(auction.connect(bidder1).distributeTokens()).to.not.be
+				.reverted;
+		});
+
+		it("Should prevent a non-bidder from distributing tokens", async () => {
+			const bidAmount = hre.ethers.parseEther("1.0");
+
+			// Place bids to ensure some commitments are in place
+			await auction.connect(bidder1).placeBid({ value: bidAmount });
+
+			// Fast forward time to end the auction
+			await hre.ethers.provider.send("evm_increaseTime", [duration + 1]);
+			await hre.ethers.provider.send("evm_mine", []);
+
+			// Attempt to call distributeTokens as a non-bidder (someone who hasn't placed a bid)
+			await expect(
+				auction.connect(nonBidder).distributeTokens(),
+			).to.be.revertedWith("Only the creator or bidders can distribute tokens");
 		});
 
 		// it("Should refund excess ethers to bidders", async function () {

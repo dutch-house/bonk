@@ -72,7 +72,6 @@ const AuctionDistribute = ({
 	//#startregion  //*======== WALLET ===========
 	const { address: account, chainId, isConnected, chain } = useAccount();
 	const isCreator = account === auction.creatorAddress;
-	const isDistributable = isCreator && !auction.tokensDistributed;
 	const isEnabled = isConnected || !account;
 	//#endregion  //*======== WALLET ===========
 
@@ -83,11 +82,22 @@ const AuctionDistribute = ({
 			enabled: false,
 		},
 	});
-	const { data: totalCommitment = 0n } = useReadAuctionMarketGetTotalCommitment(
-		{
-			address: auction.address,
+	const {
+		data: commitmentMeta = {
+			totalCommitment: 0n,
+			isBidder: false,
 		},
-	);
+	} = useReadAuctionMarketGetTotalCommitment({
+		address: auction.address,
+		query: {
+			select: (totalCommitment) => ({
+				totalCommitment,
+				isBidder: totalCommitment > 0n,
+			}),
+		},
+	});
+	const isDistributable =
+		(isCreator || commitmentMeta.isBidder) && !auction.tokensDistributed;
 	const { data: reservedPrice = 0n } = useReadAuctionMarketGetReservedPrice({
 		address: auction.address,
 	});
@@ -504,7 +514,9 @@ const AuctionDistribute = ({
 											0,
 											Number(
 												formatEther(
-													isCreator ? totalCommitment : accountCommitments,
+													isCreator
+														? commitmentMeta.totalCommitment
+														: accountCommitments,
 												),
 											),
 										).toFixed(4),
@@ -598,17 +610,18 @@ const AuctionDistribute = ({
 					</TableBody>
 				</Table>
 
-				{isCreator && (
-					<DialogFooter className="flex flex-row flex-wrap place-items-center place-content-between gap-x-4 gap-y-2 w-full *:flex-1">
-						<Button
-							size="sm"
-							className={cn("space-x-2 group", className)}
-							onClick={onDistribute}
-							disabled={!isEnabled || !isDistributable}
-						>
-							<span>Distribute Tokens</span>
-						</Button>
-
+				<DialogFooter className="flex flex-row flex-wrap place-items-center place-content-between gap-x-4 gap-y-2 w-full *:flex-1">
+					<Button
+						size="sm"
+						className={cn("space-x-2 group", className)}
+						onClick={onDistribute}
+						disabled={!isEnabled || !isDistributable}
+					>
+						<span>
+							{isDistributable ? "Distribute Tokens" : "Distributed Tokens"}
+						</span>
+					</Button>
+					{isCreator && (
 						<Button
 							size="sm"
 							className={cn("space-x-2 group", className)}
@@ -619,8 +632,8 @@ const AuctionDistribute = ({
 						>
 							<span>Withdraw Funds</span>
 						</Button>
-					</DialogFooter>
-				)}
+					)}
+				</DialogFooter>
 
 				<Toaster richColors position="bottom-center" />
 			</DialogContent>

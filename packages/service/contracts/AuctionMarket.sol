@@ -205,7 +205,10 @@ contract AuctionMarket {
   event DebugRefund(uint256 tokensPurchased, uint256 cost, uint256 refund);
 
   function distributeTokens() external nonReentrant {
-    require(msg.sender == _creator, "Only the creator can distribute tokens");
+    require(
+        msg.sender == _creator || _commitmentByBidder[msg.sender] > 0,
+        "Only the creator or bidders can distribute tokens"
+    );
     require(getAuctionEnded(), "Auction not ended yet");
     require(!_tokensDistributed, "Tokens already distributed");
 

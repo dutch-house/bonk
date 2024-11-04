@@ -10,7 +10,7 @@
 		"clean": "dotenv -- hardhat clean && rm -rf ./ignition/deployments/",
 		"build": "dotenv -- hardhat compile && dotenv -- hardhat typechain",
 		"node": "NODE_ENV=development dotenv -- hardhat node --verbose --hostname 0.0.0.0",
-		"test": "dotenv -- REPORT_GAS=true hardhat test --typecheck",
+		"test": "REPORT_GAS=true dotenv -- hardhat test --typecheck",
 		"deploy:local": "dotenv -- hardhat ignition deploy ignition/modules/AuctionInitiator.ts --network localhost",
 		"deploy:sepolia": "dotenv -- hardhat ignition deploy ignition/modules/AuctionInitiator.ts --network sepolia",
 		"dev": "pnpm run build && pnpm run node"

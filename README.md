@@ -56,5 +56,15 @@ This dApp (decentralised application) empowers users to participate in secure, t
 
 ---
 
+#### 📦 Deployment
+
+1. Generate ABI
+```bash
+cd ./apps/web
+pnpm run generate
+```
+
+
+---
 
 _This repository is submitted as a project work for Nanyang Technological University's [SC4053 - Blockchain Technology course](https://www.nanyangmods.com/modules/cz4153-blockchain-technology-3-0-au/)._

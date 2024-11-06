@@ -16,6 +16,7 @@ This dApp (decentralised application) empowers users to participate in secure, t
   />
 </p>
 
+<br/>
 
 ## Getting Started
 
@@ -26,6 +27,7 @@ This dApp (decentralised application) empowers users to participate in secure, t
 
 #### Running Locally
 - [PNPM](https://pnpm.io/installation)
+
 
 ### 🛠️ Installation and Set Up
 1. Clone repository
@@ -63,48 +65,49 @@ This dApp (decentralised application) empowers users to participate in secure, t
     cd ../../apps/web
     pnpm run generate
     ```
----
+
+<br/>
 
 ## Deployment
 
 ### 1. Deploy to Sepolia testnet on [Alchemy](https://www.alchemy.com/)
-  1.1. Set the following variables in `packages/service/.env`:
+  1. Set the following variables in `packages/service/.env`:
   ```env
   SEPOLIA_GATEWAY_URL=https://eth-sepolia.g.alchemy.com/v2/<alchemy-api-key>
   SEPOLIA_PRIVATE_KEY=<metamask-private-key>
   ```
-  1.2. Open a new terminal tab in the serivce packge
+  2. Open a new terminal tab in the serivce packge
   ```bash
   cd packages/service
   ```
-  1.3. Compile and test the smart contracts
+  3. Compile and test the smart contracts
   ```bash
   pnpm run build
   pnpm run test
   ```
-  1.4. Deploy to Sepolia testnet
+  4. Deploy to Sepolia testnet
   ```bash
   pnpm run deploy:sepolia
   ```
 
 ### 2. Host web application on Vercel
-  1.1. Set the following variables in `apps/web/.env`:
+  1. Set the following variables in `apps/web/.env`:
   ```env
   VITE_ALCHEMY_API_KEY=<alchemy-api-key>
   VITE_BONK_AUCTION_INITIATOR_ADDRESS=<deployed-auction-initiator-address>
   ```
-  1.2. Open a new terminal tab in the web packge
+  2. Open a new terminal tab in the web packge
   ```bash
   cd apps/web
   ```
-  1.3. Build the project and generate the ABI Hooks
+  3. Build the project and generate the ABI Hooks
   ```bash
   pnpm run build
   pnpm run generate
   ```
-  1.4. Deploy to [Vercel](https://vercel.com/docs/frameworks/vite)
+  4. Deploy to [Vercel](https://vercel.com/docs/frameworks/vite)
 
----
+<br/>
 
 ## Project Structure
 
@@ -128,7 +131,7 @@ This contract handles the auction mechanics. It manages the bidding process, tra
 **AuctionToken**<br/> 
 This is where the custom ERC-20 token for the auction is defined. It manages token transfers, tracks balances, mints new tokens, and burns unsold tokens to maintain supply integrity.
 
----
+<br/>
 
 ## Team Members
 

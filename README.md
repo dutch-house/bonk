@@ -1,4 +1,4 @@
-### SC4053 - Blockchain Technology Project — _🃏 bonk
+# SC4053 - Blockchain Technology Project — _🃏 bonk_
 
 **🃏 bonk** is your gateway to secure, transparent and fair decentralized dutch auctions. 
 This dApp (decentralised application) empowers users to participate in secure, trustless bidding—where every bid counts and decentralisation is at the core.
@@ -16,55 +16,52 @@ This dApp (decentralised application) empowers users to participate in secure, t
 </p>
 
 
----
+## Getting Started
 
-#### 🛠️ Installation and Set Up
+### Pre-requisites
+#### Running in a Container
+- Docker
+- Dev Container extension ([VSCode](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers))
 
-- Clone repository
+#### Running Locally
+- [PNPM](https://pnpm.io/installation)
 
-  ```bash
-  git clone git@github.com:crystalcheong/bonk.git
-  ```
+### 🛠️ Installation and Set Up
+1. Clone repository
+    ```bash
+    git clone git@github.com:crystalcheong/bonk.git
+    cd bonk
+    ```
+2. Duplicate `.env.example` to create `.env` file
+    ```bash
+    cp -n packages/service/.env.example packages/service/.env
+    cp -n apps/web/.env.example apps/web/.env
+    ```
+3. Install dependencies
+    ```bash
+    pnpm i
+    ```
+3. Start the application
+    ```bash
+    pnpm run dev
+    ```
+  > [!TIP]
+  > Copy the Hardhat generated network accounts, for testing in localhost
 
-- Install dependencies
-  ```bash
-  pnpm install
-  ```
-
-> [!IMPORTANT]
-> Required environment variables in the following packages: `apps/web`, `packages/service`
->
-> - Duplicate `.env.example` to create `*.env` files
->   - `.env` — The default file used to store your dev, production, and test variables
->   - `.env.local` — Overrides all environment files except the test file (including the default .env file)
-
-- Starting the server<br/>
-  **Frontend** (`apps/web`): `http://localhost:${VITE_APP_PORT}`<br/>
-  **Hardhat Node** (`packages/service`): `http://localhost:8545`<br/>
-  ```bash
-   pnpm run dev
-  ```
-
-  In a new terminal tab, deploy the contracts<br/>
-  ```bash
-   cd ./packages/service
-   pnpm run deploy:local
-  ```
-
-  Once deployed, update `apps/web/.env`,<br/>
-  `VITE_BONK_AUCTION_INITIATOR_ADDRESS=<auction-initiator-address>`
-
----
-
-#### 📦 Deployment
-
-1. Generate ABI
-```bash
-cd ./apps/web
-pnpm run generate
-```
-
-
+4. In a new terminal tab, deploy smart contracts
+    ```bash
+    cd ./packages/service
+    pnpm run deploy:local
+    ```
+    Once deployed, update `apps/web/.env`,<br/>
+    ```env
+    VITE_BONK_AUCTION_INITIATOR_ADDRESS=<auction-initiator-address>
+    ```
+5. Regenerate ABI
+    ```bash
+    cd ../../apps/web
+    pnpm run generate
+    ```
 ---
 
 _This repository is submitted as a project work for Nanyang Technological University's [SC4053 - Blockchain Technology course](https://www.nanyangmods.com/modules/cz4153-blockchain-technology-3-0-au/)._

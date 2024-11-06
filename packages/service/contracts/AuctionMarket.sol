@@ -3,7 +3,7 @@ pragma solidity ^0.8.27;
 
 import "./AuctionToken.sol";
 
-// AuctionMarket contract (to be created by AuctionFactory contract)
+// AuctionMarket contract (to be created by AuctionInitator contract)
 contract AuctionMarket {
   AuctionToken private _token;
   address private _creator;
@@ -169,7 +169,7 @@ contract AuctionMarket {
   function placeBid() external payable nonReentrant {
     require(!getAuctionEnded(), "Auction ended");
     require(msg.sender != _creator, "Creator cannot place a bid");
-    require(msg.value >= 0, "Bid value must be more than 0");
+    require(msg.value > 0, "Bid value must be more than 0");
 
     // Step 1: Calculate the current auction price using Dutch auction logic
     uint256 currentPrice = getCurrentPrice();
@@ -206,8 +206,8 @@ contract AuctionMarket {
 
   function distributeTokens() external nonReentrant {
     require(
-        msg.sender == _creator || _commitmentByBidder[msg.sender] > 0,
-        "Only the creator or bidders can distribute tokens"
+      msg.sender == _creator || _commitmentByBidder[msg.sender] > 0,
+      "Only the creator or bidders can distribute tokens"
     );
     require(getAuctionEnded(), "Auction not ended yet");
     require(!_tokensDistributed, "Tokens already distributed");

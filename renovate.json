@@ -1,4 +1,12 @@
 {
-	"$schema": "https://docs.renovatebot.com/renovate-schema.json",
-	"extends": ["config:recommended"]
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:recommended", "group:all", ":gitSignOff"],
+  "major": {
+    "enabled": false
+  },
+  "updatePinnedDependencies": false,
+  "stabilityDays": 2,
+  "timezone": "Asia/Singapore",
+  "schedule": ["before 1am on Monday"],
+  "baseBranches": ["main"]
 }

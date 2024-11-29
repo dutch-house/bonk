@@ -1,7 +1,12 @@
-# SC4053 - Blockchain Technology Project — _🃏 bonk_
+# SC4053 - Blockchain Technology Project — _🃏 BONK
 
-**🃏 bonk** is your gateway to secure, transparent and fair decentralized dutch auctions. 
-This dApp (decentralised application) empowers users to participate in secure, trust-less bidding—where every bid counts and decentralisation is at the core.
+**🃏 BONK** is short for Bid On Non-fungible Kavel *(Kavel is Dutch for "lot")*<br/>
+- **Bid On:** Participate in an auction to place bids.
+- **Non-fungible:** Referring to unique, indivisible items that are verified on the blockchain (like NFTs).
+- **Kavel:** A Dutch word meaning "lot" or "parcel," representing each unique auction item.
+
+Together, **BONK** is your gateway to secure, transparent and fair decentralized dutch auctions. 
+This dApp (decentralised application) empowers users to participate in secure, trust-less bidding—where every bid counts and decentralisation is at the core.<br/>
 
 > Dutch auctions decentralised to bid smart and own fast.<br/>
 >
